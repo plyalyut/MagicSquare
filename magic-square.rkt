@@ -86,6 +86,13 @@ run {
     magic_square
     --sum_to_value
 } for exactly 1 Board, exactly 2 Coord, 7 Int
+--7 int gives us negative numbers and positive numbers
+--right now we are not using all of the numbers we are getting
+--maybe try to work with negative numbers?
+--7 int = 7 bits (2^7 possible values)
+--maybe try working with smaller numbers?
+--talk to Tim about how to improve
+--z3??
 
 --run {
 --    structural
