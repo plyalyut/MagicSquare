@@ -50,26 +50,19 @@ pred structural {
 
         lone Board.places.n.Coord -- zero/one col per N
         lone Coord.(Board.places.n) -- zero/one row per N
-    }
-
-
-    
+    }  
 }
 
 pred magic_square {
+   sum[Board.diagonal1] = sum[Board.diagonal2]
    all c1: Coord {
-       sum[(Board.places[c1][Coord]).value] = sum[(Board.places[Coord][c1]).value]
-       --sum[(Board.places[c1][c1]).value] = sum[(Board.places[Coord][c1]).value] -- Diagonal
-       --TODO: move digonal stuff up here? Was making program slow.
+       sum[Board.diagonal1] = sum[(Board.places[c1][Coord])]
+       sum[Board.diagonal1] = sum[(Board.places[Coord][c1])]
    }
 }
 
 pred sum_to_value {
-   all c1: Coord {
-       sum[(Board.places[c1][Coord])] = 15
-   }
    sum[Board.diagonal1] = 15
-   sum[Board.diagonal2] = 15
 }                  
 
 run {
@@ -83,7 +76,6 @@ Notes:
 --7 int gives us negative numbers and positive numbers
 --right now we are not using all of the numbers we are getting
 --maybe try to work with negative numbers?
---7 int = 7 bits (2^7 possible values)
 --talk to Tim about how to improve
 --Z3??
 */
