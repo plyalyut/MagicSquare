@@ -89,7 +89,7 @@ run {
     structural
     magic_square
     successive
-} for exactly 1 Board, exactly 3 Coord, 5 Int
+} for exactly 1 Board, exactly 4 Coord, 6 Int
 
 
 
