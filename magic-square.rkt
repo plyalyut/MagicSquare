@@ -61,15 +61,37 @@ pred magic_square {
    }
 }
 
-pred sum_to_value {
-   sum[Board.diagonal1] = 15
-}                  
+-- Value for each of the vertical, horizontal columns to sum up to.
+pred sum_to_value[sum_value: Int] {
+   sum[Board.diagonal1] = sum_value
+}
 
+pred successive {
+    1 in places.Board.Coord.Coord
+
+    all i1: Int, i2: i1.^succ | some i1&i2 in places.Board.Coord.Coord => {
+        all i3: i1.^succ & i2.^~succ | some i3 in places.Board.Coord.Coord
+    }
+        
+}
+
+---------------------------Tests-----------------------------
+
+--  no 2x2 cases
 run {
     structural
     magic_square
-    sum_to_value
+} for exactly 1 Board, exactly 2 Coord, 4 Int
+
+
+-- 3x3 case summing up to 15
+run {
+    structural
+    magic_square
+    successive
 } for exactly 1 Board, exactly 3 Coord, 5 Int
+
+
 
 /*
 Notes:
