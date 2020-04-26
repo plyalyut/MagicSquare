@@ -20,7 +20,7 @@ pred structural {
     all c1: Coord | all c2: Coord {
 
         --all values > 0
-        sum[Board.places[c1][c2]] > 0
+        --sum[Board.places[c1][c2]] > 0
 
         --one int per x,y coord
         one Board.places[c1][c2]
@@ -67,15 +67,25 @@ pred sum_to_value[sum_value: Int] {
 }
 
 pred successive {
-    -- Starts at 1
-    min[places[Board][Coord][Coord]] = 1 
-
     -- All integers are succesive
-    (places[Board][Coord][Coord]).succ + sing[1] - sing[max[(places[Board][Coord][Coord]).succ]] = places[Board][Coord][Coord]
-        
+    (places[Board][Coord][Coord]).succ + sing[min[(places[Board][Coord][Coord])]] - sing[max[(places[Board][Coord][Coord]).succ]] = places[Board][Coord][Coord]    
 }
 
+pred start_at[value: Int]{
+    -- Starts at a given value
+    min[places[Board][Coord][Coord]] = value
+}
+
+
 ---------------------------Tests-----------------------------
+-- Trivial case 1x1
+run {
+    structural
+    magic_square
+    successive
+    start_at[1]
+} for exactly 1 Board, exactly 1 Coord, 2 Int
+
 
 --  no 2x2 cases
 --run {
@@ -85,18 +95,21 @@ pred successive {
 
 
 -- 3x3 case summing up to 15
-run {
-    structural
-    magic_square
-    successive
-} for exactly 1 Board, exactly 3 Coord, 5 Int
+--run {
+--    structural
+--    magic_square
+--    successive
+--    --start_at[1]
+--} for exactly 1 Board, exactly 3 Coord, 5 Int
 
 -- 4x4 case solution
 run {
     structural
     magic_square
-    successive
-} for exactly 1 Board, exactly 4 Coord, 6 Int
+    --successive
+    --start_at[-1]
+    sum_to_value[-2]
+} for exactly 1 Board, exactly 4 Coord, 5 Int
 
 
 
