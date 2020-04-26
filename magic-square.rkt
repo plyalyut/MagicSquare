@@ -67,21 +67,21 @@ pred sum_to_value[sum_value: Int] {
 }
 
 pred successive {
-    1 in places.Board.Coord.Coord
+    -- Starts at 1
+    min[places[Board][Coord][Coord]] = 1 
 
-    all i1: Int, i2: i1.^succ | some i1&i2 in places.Board.Coord.Coord => {
-        all i3: i1.^succ & i2.^~succ | some i3 in places.Board.Coord.Coord
-    }
+    -- All integers are succesive
+    (places[Board][Coord][Coord]).succ + sing[1] - sing[max[(places[Board][Coord][Coord]).succ]] = places[Board][Coord][Coord]
         
 }
 
 ---------------------------Tests-----------------------------
 
 --  no 2x2 cases
-run {
-    structural
-    magic_square
-} for exactly 1 Board, exactly 2 Coord, 4 Int
+--run {
+--    structural
+--    magic_square
+--} for exactly 1 Board, exactly 2 Coord, 4 Int
 
 
 -- 3x3 case summing up to 15
