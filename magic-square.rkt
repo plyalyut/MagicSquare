@@ -17,10 +17,10 @@ pred structural {
     -- coord x coord size board
     Board.places.Int = Coord -> Coord
 
-    all c1: Coord | all c2: Coord {
+    all c1: Coord | all c2: Coord | {
 
         --all values > 0
-        --sum[Board.places[c1][c2]] > 0
+        sum[Board.places[c1][c2]] > 0
 
         --one int per x,y coord
         one Board.places[c1][c2]
@@ -41,8 +41,7 @@ pred structural {
         add[sum[c1.value], sum[c2.value]] = max[Coord.value] implies Board.places[c1][c2] in Board.diagonal2
         else Board.places[c1][c2] not in Board.diagonal2
     }
-
-    
+  
     all n: Int | {
         --only ints in board can be in diagonals
         n in Board.diagonal1 implies one Coord.(Board.places.n)
@@ -54,11 +53,11 @@ pred structural {
 }
 
 pred magic_square {
-   sum[Board.diagonal1] = sum[Board.diagonal2]
-   all c1: Coord {
-       sum[Board.diagonal1] = sum[(Board.places[c1][Coord])]
-       sum[Board.diagonal1] = sum[(Board.places[Coord][c1])]
-   }
+    sum[Board.diagonal1] = sum[Board.diagonal2]
+    all c1: Coord {
+        sum[Board.diagonal1] = sum[(Board.places[c1][Coord])]
+        sum[Board.diagonal1] = sum[(Board.places[Coord][c1])]
+    }
 }
 
 -- Value for each of the vertical, horizontal columns to sum up to.
@@ -68,7 +67,7 @@ pred sum_to_value[sum_value: Int] {
 
 pred successive {
     -- All integers are succesive
-    (places[Board][Coord][Coord]).succ + sing[min[(places[Board][Coord][Coord])]] - sing[max[(places[Board][Coord][Coord]).succ]] = places[Board][Coord][Coord]    
+    (places[Board][Coord][Coord]).succ + sing[min[(places[Board][Coord][Coord])]] - sing[max[(places[Board][Coord][Coord]).succ]] = places[Board][Coord][Coord]
 }
 
 pred start_at[value: Int]{
@@ -76,41 +75,84 @@ pred start_at[value: Int]{
     min[places[Board][Coord][Coord]] = value
 }
 
+pred must_contain[values: set Int]{
+    -- Square must contain the values provided in the set
+    all value: values | {
+        value in Board.places[Coord][Coord]
+    }
+}
 
----------------------------Tests-----------------------------
+pred square_all_odd {
+    -- Square must contain the values provided in the set
+    all val: Board.places[Coord][Coord] | {
+        remainder[sum[val], 2] = 1
+    }
+}
+
+pred square_all_even {
+    -- Square must contain the values provided in the set
+    all val: Board.places[Coord][Coord] | {
+        remainder[sum[val], 2] = 0
+    }
+}
+
+-------------------------Tests-----------------------------
 -- Trivial case 1x1
-run {
-    structural
-    magic_square
-    successive
-    start_at[1]
-} for exactly 1 Board, exactly 1 Coord, 2 Int
+--run {
+--    structural
+--    magic_square
+--    successive
+--    start_at[1]
+--} for exactly 1 Board, exactly 1 Coord, 2 Int
 
 
---  no 2x2 cases
+-- no 2x2 cases exist
 --run {
 --    structural
 --    magic_square
 --} for exactly 1 Board, exactly 2 Coord, 4 Int
 
 
--- 3x3 case summing up to 15
+-- 3x3 case summing up to 15 (successive numbers)
 --run {
 --    structural
 --    magic_square
 --    successive
---    --start_at[1]
+--    start_at[1]
 --} for exactly 1 Board, exactly 3 Coord, 5 Int
 
--- 4x4 case solution
+
+-- 3x3 case -- no restrictions
 run {
     structural
     magic_square
-    --successive
-    --start_at[-1]
-    sum_to_value[-2]
-} for exactly 1 Board, exactly 4 Coord, 5 Int
+} for exactly 1 Board, exactly 3 Coord, 5 Int
 
+
+-- 3x3 case -- all odd
+--run {
+--    structural
+--    magic_square
+--      square_all_odd
+--} for exactly 1 Board, exactly 3 Coord, 6 Int
+
+
+-- 3x3 case -- all even
+--run {
+--    structural
+--    magic_square
+--    square_all_even
+--} for exactly 1 Board, exactly 3 Coord, 6 Int
+
+
+-- 4x4 case solution
+--run {
+--    structural
+--    magic_square
+--    successive
+--    start_at[1]
+--    --sum_to_value[-2]
+--} for exactly 1 Board, exactly 4 Coord, 6 Int
 
 
 /*
@@ -121,5 +163,10 @@ Notes:
 --talk to Tim about how to improve
 --Z3??
 */
+
+/*
+Observations:
+*/
+
 
 
