@@ -12,18 +12,18 @@ sig Board {
     diagonal2: set Int
 }
 
-pred structural {
+pred structural[b: Board] {
 
     -- coord x coord size board
-    Board.places.Int = Coord -> Coord
+    b.places.Int = Coord -> Coord
 
     all c1: Coord | all c2: Coord | {
 
         --all values > 0
-        sum[Board.places[c1][c2]] > 0
+        sum[b.places[c1][c2]] > 0
 
         --one int per x,y coord
-        one Board.places[c1][c2]
+        one b.places[c1][c2]
 
         --coord is in range 0 -> (board side length - 1)
         sum[c1.value] >= 0
@@ -33,125 +33,155 @@ pred structural {
         c1 != c2 implies (c1.value != c2.value)
 
         --values in the first diagonal (TL -> BR)
-        c1 = c2 implies Board.places[c1][c2] in Board.diagonal1
-        else Board.places[c1][c2] not in Board.diagonal1
+        c1 = c2 implies b.places[c1][c2] in b.diagonal1
+        else b.places[c1][c2] not in b.diagonal1
 
         --values in the second diagonal (TR -> BL)
         --if it is in second diagonal, the sum of two coordinates = (board side length - 1)
-        add[sum[c1.value], sum[c2.value]] = max[Coord.value] implies Board.places[c1][c2] in Board.diagonal2
-        else Board.places[c1][c2] not in Board.diagonal2
+        add[sum[c1.value], sum[c2.value]] = max[Coord.value] implies b.places[c1][c2] in b.diagonal2
+        else b.places[c1][c2] not in b.diagonal2
     }
   
     all n: Int | {
         --only ints in board can be in diagonals
-        n in Board.diagonal1 implies one Coord.(Board.places.n)
-        n in Board.diagonal2 implies one Coord.(Board.places.n)
+        n in b.diagonal1 implies one Coord.(b.places.n)
+        n in b.diagonal2 implies one Coord.(b.places.n)
 
-        lone Board.places.n.Coord -- zero/one col per N
-        lone Coord.(Board.places.n) -- zero/one row per N
+        lone b.places.n.Coord -- zero/one col per N
+        lone Coord.(b.places.n) -- zero/one row per N
     }  
 }
 
-pred magic_square {
-    sum[Board.diagonal1] = sum[Board.diagonal2]
+pred magic_square[b: Board] {
+    sum[b.diagonal1] = sum[b.diagonal2]
     all c1: Coord {
-        sum[Board.diagonal1] = sum[(Board.places[c1][Coord])]
-        sum[Board.diagonal1] = sum[(Board.places[Coord][c1])]
+        sum[b.diagonal1] = sum[(b.places[c1][Coord])]
+        sum[b.diagonal1] = sum[(b.places[Coord][c1])]
     }
 }
 
 -- Value for each of the vertical, horizontal columns to sum up to.
-pred sum_to_value[sum_value: Int] {
-   sum[Board.diagonal1] = sum_value
+pred sum_to_value[sum_value: Int, b: Board] {
+   sum[b.diagonal1] = sum_value
 }
 
-pred successive {
+pred successive[b: Board] {
     -- All integers are succesive
-    (places[Board][Coord][Coord]).succ + sing[min[(places[Board][Coord][Coord])]] - sing[max[(places[Board][Coord][Coord]).succ]] = places[Board][Coord][Coord]
+    (places[b][Coord][Coord]).succ + sing[min[(places[b][Coord][Coord])]] - sing[max[(places[b][Coord][Coord]).succ]] = places[b][Coord][Coord]
 }
 
-pred start_at[value: Int]{
+pred start_at[value: Int, b: Board]{
     -- Starts at a given value
-    min[places[Board][Coord][Coord]] = value
+    min[places[b][Coord][Coord]] = value
 }
 
-pred must_contain[values: set Int]{
+pred must_contain[values: set Int, b: Board]{
     -- Square must contain the values provided in the set
     all value: values | {
-        value in Board.places[Coord][Coord]
+        value in b.places[Coord][Coord]
     }
 }
 
-pred square_all_odd {
+pred square_all_odd[b: Board] {
     -- Square must contain the values provided in the set
-    all val: Board.places[Coord][Coord] | {
+    all val: b.places[Coord][Coord] | {
         remainder[sum[val], 2] = 1
     }
 }
 
-pred square_all_even {
+pred square_all_even[b: Board] {
     -- Square must contain the values provided in the set
-    all val: Board.places[Coord][Coord] | {
+    all val: b.places[Coord][Coord] | {
         remainder[sum[val], 2] = 0
+    }
+}
+
+pred double_square {
+    some b1: Board | some b2: Board | all c1: Coord | all c2: Coord | {
+        sum[b2.places[c1][c2]] = multiply[sum[b1.places[c1][c2]], 2]
     }
 }
 
 -------------------------Tests-----------------------------
 -- Trivial case 1x1
 --run {
---    structural
---    magic_square
---    successive
---    start_at[1]
+--    all b: Board {
+--        structural
+--        magic_square
+--        successive
+--        start_at[1]
+--    }
 --} for exactly 1 Board, exactly 1 Coord, 2 Int
 
 
 -- no 2x2 cases exist
 --run {
---    structural
---    magic_square
+--    all b: Board {
+--        structural
+--        magic_square
+--    }
 --} for exactly 1 Board, exactly 2 Coord, 4 Int
 
 
 -- 3x3 case summing up to 15 (successive numbers)
 --run {
---    structural
---    magic_square
---    successive
---    start_at[1]
+--    all b: Board {
+--        structural
+--        magic_square
+--        successive
+--        start_at[1]
+--    }
 --} for exactly 1 Board, exactly 3 Coord, 5 Int
 
 
 -- 3x3 case -- no restrictions
+--run {
+--    all b: Board | {
+--        structural[b]
+--        magic_square[b]
+--    }
+--} for exactly 1 Board, exactly 3 Coord, 5 Int
+
+-- 3x3 case -- doubles
+-- this case finds two valid magic squares
+-- one has all of the values of the first board in the same locations, but doubled
 run {
-    structural
-    magic_square
-} for exactly 1 Board, exactly 3 Coord, 5 Int
+    all b: Board | {
+        structural[b]
+        magic_square[b]
+        double_square
+    }
+} for exactly 2 Board, exactly 3 Coord, 6 Int
 
 
 -- 3x3 case -- all odd
 --run {
---    structural
---    magic_square
---      square_all_odd
+--    all b: Board {
+--        structural
+--        magic_square
+--        square_all_odd
+--    }
 --} for exactly 1 Board, exactly 3 Coord, 6 Int
 
 
 -- 3x3 case -- all even
 --run {
---    structural
---    magic_square
---    square_all_even
+--    all b: Board {
+--        structural
+--        magic_square
+--        square_all_even
+--    }
 --} for exactly 1 Board, exactly 3 Coord, 6 Int
 
 
 -- 4x4 case solution
 --run {
---    structural
---    magic_square
---    successive
---    start_at[1]
---    --sum_to_value[-2]
+--    all b: Board {
+--        structural
+--        magic_square
+--        successive
+--        start_at[1]
+--    }
 --} for exactly 1 Board, exactly 4 Coord, 6 Int
 
 
