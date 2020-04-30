@@ -5,12 +5,14 @@ sig Coord {
     value: one Int
 }
 
+
 --represents Coord * Coord board of Int
 sig Board {
     places: set Coord -> Coord -> Int, --row->col->N value
     diagonal1: set Int,
     diagonal2: set Int
 }
+--try different numbers for each coordinate
 
 pred structural[b: Board] {
 
@@ -77,8 +79,8 @@ pred start_at[value: Int, b: Board]{
 
 pred must_contain[values: set Int, b: Board]{
     -- Square must contain the values provided in the set
-    all value: values | {
-        value in b.places[Coord][Coord]
+    all v: values | {
+        v in b.places[Coord][Coord]
     }
 }
 
@@ -96,9 +98,23 @@ pred square_all_even[b: Board] {
     }
 }
 
+--TODO: redo this to make it generally prove multiplicity property
 pred double_square {
     some b1: Board | some b2: Board | all c1: Coord | all c2: Coord | {
         sum[b2.places[c1][c2]] = multiply[sum[b1.places[c1][c2]], 2]
+    }
+}
+
+pred generate_square {
+    some final: Board | {
+        some init: Board | {
+            structural[final]
+            magic_square[final]
+            init != final
+            #(init.places[Coord][Coord]) = #(Coord)
+            init.places in final.places
+            no init.diagonal1 and no init.diagonal2
+        }
     }
 }
 
@@ -106,9 +122,9 @@ pred double_square {
 -- Trivial case 1x1
 --run {
 --    all b: Board {
---        structural
---        magic_square
---        successive
+--        structural[b]
+--        magic_square[b]
+--        successive[b]
 --        start_at[1]
 --    }
 --} for exactly 1 Board, exactly 1 Coord, 2 Int
@@ -117,8 +133,8 @@ pred double_square {
 -- no 2x2 cases exist
 --run {
 --    all b: Board {
---        structural
---        magic_square
+--        structural[b]
+--        magic_square[b]
 --    }
 --} for exactly 1 Board, exactly 2 Coord, 4 Int
 
@@ -126,9 +142,9 @@ pred double_square {
 -- 3x3 case summing up to 15 (successive numbers)
 --run {
 --    all b: Board {
---        structural
---        magic_square
---        successive
+--        structural[b]
+--        magic_square[b]
+--        successive[b]
 --        start_at[1]
 --    }
 --} for exactly 1 Board, exactly 3 Coord, 5 Int
@@ -142,24 +158,22 @@ pred double_square {
 --    }
 --} for exactly 1 Board, exactly 3 Coord, 5 Int
 
--- 3x3 case -- doubles
--- this case finds two valid magic squares
--- one has all of the values of the first board in the same locations, but doubled
-run {
-    all b: Board | {
-        structural[b]
-        magic_square[b]
-        double_square
-    }
-} for exactly 2 Board, exactly 3 Coord, 6 Int
+-- TODO: change to general multiplicity property
+--run {
+--    all b: Board | {
+--        structural[b]
+--        magic_square[b]
+--        double_square
+--    }
+--} for exactly 2 Board, exactly 3 Coord, 6 Int
 
 
 -- 3x3 case -- all odd
 --run {
 --    all b: Board {
---        structural
---        magic_square
---        square_all_odd
+--        structural[b]
+--        magic_square[b]
+--        square_all_odd[b]
 --    }
 --} for exactly 1 Board, exactly 3 Coord, 6 Int
 
@@ -167,9 +181,9 @@ run {
 -- 3x3 case -- all even
 --run {
 --    all b: Board {
---        structural
---        magic_square
---        square_all_even
+--        structural[b]
+--        magic_square[b]
+--        square_all_even[b]
 --    }
 --} for exactly 1 Board, exactly 3 Coord, 6 Int
 
@@ -177,21 +191,37 @@ run {
 -- 4x4 case solution
 --run {
 --    all b: Board {
---        structural
---        magic_square
---        successive
---        start_at[1]
+--        structural[b]
+--        magic_square[b]
+--        --successive
+--        --start_at[1]
 --    }
---} for exactly 1 Board, exactly 4 Coord, 6 Int
+--} for exactly 1 Board, exactly 4 Coord, 4 Int
+
+-- foundation goal
+--run {
+--    all b: Board {
+--        structural[b]
+--        magic_square[b]
+--        must_contain[sing[1] + sing[15], b]
+--    }
+--} for exactly 1 Board, exactly 3 Coord, 5 Int
+
+-- reach goal
+run {
+    generate_square
+} for exactly 2 Board, exactly 3 Coord, 5 Int
+
 
 
 /*
 Notes:
---7 int gives us negative numbers and positive numbers
+7 int gives us negative numbers and positive numbers
 --right now we are not using all of the numbers we are getting
 --maybe try to work with negative numbers?
 --talk to Tim about how to improve
 --Z3??
+--try doing coord0, coord1, coord2, coord3
 */
 
 /*
