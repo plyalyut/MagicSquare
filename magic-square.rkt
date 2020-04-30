@@ -5,14 +5,12 @@ sig Coord {
     value: one Int
 }
 
-
 --represents Coord * Coord board of Int
 sig Board {
     places: set Coord -> Coord -> Int, --row->col->N value
     diagonal1: set Int,
     diagonal2: set Int
 }
---try different numbers for each coordinate
 
 pred structural[b: Board] {
 
@@ -105,19 +103,6 @@ pred double_square {
     }
 }
 
-pred generate_square {
-    some final: Board | {
-        some init: Board | {
-            structural[final]
-            magic_square[final]
-            init != final
-            #(init.places[Coord][Coord]) = #(Coord)
-            init.places in final.places
-            no init.diagonal1 and no init.diagonal2
-        }
-    }
-}
-
 -------------------------Tests-----------------------------
 -- Trivial case 1x1
 --run {
@@ -207,10 +192,6 @@ pred generate_square {
 --    }
 --} for exactly 1 Board, exactly 3 Coord, 5 Int
 
--- reach goal
-run {
-    generate_square
-} for exactly 2 Board, exactly 3 Coord, 5 Int
 
 
 
@@ -222,6 +203,7 @@ Notes:
 --talk to Tim about how to improve
 --Z3??
 --try doing coord0, coord1, coord2, coord3
+
 */
 
 /*
