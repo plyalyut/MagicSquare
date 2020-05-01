@@ -96,10 +96,17 @@ pred square_all_even[b: Board] {
     }
 }
 
---TODO: redo this to make it generally prove multiplicity property
-pred double_square {
-    some b1: Board | some b2: Board | all c1: Coord | all c2: Coord | {
-        sum[b2.places[c1][c2]] = multiply[sum[b1.places[c1][c2]], 2]
+--b2 is multiplied version of b1
+pred multiply_square[b1: Board, b2: Board] {
+    all c1: Coord | all c2: Coord | some n: Int {
+        sum[b2.places[c1][c2]] = multiply[sum[b1.places[c1][c2]], sum[n]]
+    }
+}
+
+--b2 is added version of b1
+pred add_square[b1: Board, b2: Board] {
+    all c1: Coord | all c2: Coord | some n: Int {
+        sum[b2.places[c1][c2]] = add[sum[b1.places[c1][c2]], sum[n]]
     }
 }
 
@@ -143,15 +150,6 @@ pred double_square {
 --    }
 --} for exactly 1 Board, exactly 3 Coord, 5 Int
 
--- TODO: change to general multiplicity property
---run {
---    all b: Board | {
---        structural[b]
---        magic_square[b]
---        double_square
---    }
---} for exactly 2 Board, exactly 3 Coord, 6 Int
-
 
 -- 3x3 case -- all odd
 --run {
@@ -184,31 +182,25 @@ pred double_square {
 --} for exactly 1 Board, exactly 4 Coord, 4 Int
 
 -- foundation goal
---run {
---    all b: Board {
---        structural[b]
---        magic_square[b]
---        must_contain[sing[1] + sing[15], b]
+run {
+    all b: Board {
+        structural[b]
+        magic_square[b]
+        must_contain[sing[11], b]
+    }
+} for exactly 1 Board, exactly 3 Coord, 6 Int
+
+-- multiplicity property of magic squares
+--multiplicity_property : check {
+--    some b1: Board | some b2: Board - b1 {
+--        structural[b1] and structural[b2] and multiply_square[b1, b2] and magic_square[b1] implies magic_square[b2]
 --    }
---} for exactly 1 Board, exactly 3 Coord, 5 Int
+--} for exactly 2 Board, exactly 3 Coord, 6 Int
 
 
-
-
-/*
-Notes:
-7 int gives us negative numbers and positive numbers
---right now we are not using all of the numbers we are getting
---maybe try to work with negative numbers?
---talk to Tim about how to improve
---Z3??
---try doing coord0, coord1, coord2, coord3
-
-*/
-
-/*
-Observations:
-*/
-
-
-
+-- additive property of magic squares
+additive_property : check {
+    some b1: Board | some b2: Board - b1 {
+        structural[b1] and structural[b2] and add_square[b1, b2] and magic_square[b1] implies magic_square[b2]
+    }
+} for exactly 2 Board, exactly 3 Coord, 6 Int
