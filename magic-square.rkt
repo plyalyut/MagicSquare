@@ -12,6 +12,7 @@ sig Board {
     diagonal2: set Int
 }
 
+--sets up structure of board
 pred structural[b: Board] {
 
     -- coord x coord size board
@@ -82,6 +83,7 @@ pred must_contain[values: set Int, b: Board]{
     }
 }
 
+--all values in square are oodd
 pred square_all_odd[b: Board] {
     -- Square must contain the values provided in the set
     all val: b.places[Coord][Coord] | {
@@ -89,6 +91,7 @@ pred square_all_odd[b: Board] {
     }
 }
 
+--all values in square are even
 pred square_all_even[b: Board] {
     -- Square must contain the values provided in the set
     all val: b.places[Coord][Coord] | {
@@ -128,10 +131,11 @@ pred add_square[b1: Board, b2: Board] {
 --        structural[b]
 --        magic_square[b]
 --    }
---} for exactly 1 Board, exactly 2 Coord, 4 Int
+--} for exactly 1 Board, exactly 2 Coord, 5 Int
 
 
 -- 3x3 case summing up to 15 (successive numbers)
+-- show
 --run {
 --    all b: Board {
 --        structural[b]
@@ -171,24 +175,15 @@ pred add_square[b1: Board, b2: Board] {
 --} for exactly 1 Board, exactly 3 Coord, 6 Int
 
 
--- 4x4 case solution
+-- foundation goal
+-- dictate which values should be in magic square
 --run {
 --    all b: Board {
 --        structural[b]
 --        magic_square[b]
---        --successive
---        --start_at[1]
+--        must_contain[sing[11], b]
 --    }
---} for exactly 1 Board, exactly 4 Coord, 4 Int
-
--- foundation goal
-run {
-    all b: Board {
-        structural[b]
-        magic_square[b]
-        must_contain[sing[11], b]
-    }
-} for exactly 1 Board, exactly 3 Coord, 6 Int
+--} for exactly 1 Board, exactly 3 Coord, 6 Int
 
 -- multiplicity property of magic squares
 --multiplicity_property : check {
@@ -199,8 +194,8 @@ run {
 
 
 -- additive property of magic squares
-additive_property : check {
-    some b1: Board | some b2: Board - b1 {
-        structural[b1] and structural[b2] and add_square[b1, b2] and magic_square[b1] implies magic_square[b2]
-    }
-} for exactly 2 Board, exactly 3 Coord, 6 Int
+--additive_property : check {
+--    some b1: Board | some b2: Board - b1 {
+--        structural[b1] and structural[b2] and add_square[b1, b2] and magic_square[b1] implies magic_square[b2]
+--    }
+--} for exactly 2 Board, exactly 3 Coord, 6 Int
