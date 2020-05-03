@@ -135,7 +135,6 @@ pred add_square[b1: Board, b2: Board] {
 
 
 -- 3x3 case summing up to 15 (successive numbers)
--- show
 --run {
 --    all b: Board {
 --        structural[b]
