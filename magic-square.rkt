@@ -185,6 +185,36 @@ pred add_square[b1: Board, b2: Board] {
 --    }
 --} for exactly 1 Board, exactly 3 Coord, 6 Int
 
+--repeated values in board
+inst repeatedValue {
+  Board = Board0
+  Coord = Coord0 + Coord1 + Coord2
+  places = Board0->Coord0->Coord0->sing[2] + Board0->Coord0->Coord1->sing[7]  + Board0->Coord0->Coord2->sing[6]  +
+      Board0->Coord1->Coord0->sing[0]  + Board0->Coord1->Coord1->sing[5]  + Board0->Coord1->Coord2->sing[1]  +
+      Board0->Coord2->Coord0->sing[4]  + Board0->Coord2->Coord1->sing[3]  + Board0->Coord2->Coord2->sing[3]
+}
+
+--board with two values at same coordinate
+inst invalidBoard {
+  Board = Board0
+  Coord = Coord0 + Coord1 + Coord2
+  places = Board0->Coord0->Coord0->sing[2] + Board0->Coord0->Coord1->sing[0]  + Board0->Coord0->Coord2->sing[6]  +
+      Board0->Coord1->Coord1->sing[5]  + Board0->Coord1->Coord1->sing[7]  + Board0->Coord1->Coord2->sing[1]  +
+      Board0->Coord2->Coord0->sing[4]  + Board0->Coord2->Coord1->sing[3]  + Board0->Coord2->Coord2->sing[-1]
+}
+
+--board with two values at same coordinate
+inst twoByTwo {
+  Board = Board0
+  Coord = Coord0 + Coord1
+}
+
+test expect {
+    { structural[Board] magic_square[Board] } for repeatedValue is unsat
+    { structural[Board] magic_square[Board] } for invalidBoard is unsat
+    { structural[Board] magic_square[Board] } for twoByTwo is unsat
+}
+
 -- multiplicity property of magic squares
 --multiplicity_property : check {
 --    some b1: Board | some b2: Board - b1 {
