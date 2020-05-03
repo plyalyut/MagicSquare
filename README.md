@@ -12,6 +12,8 @@ In this spec, we made a few discoveries:
 -Using numbers 1-9, there is only one unique 3x3 magic square
 -Adding a constant onto each value in a magic square creates another magic square
 -Multiplying each value in a magic square by a constant creates another magic square
+-There exists a 3x3 magic square of only odd numbers
+-There exists a 3x3 magic square of only even numbers
 
 four_by_four.rkt:
 magic_square.rkt provides a general framework for constructing magic squares of any NxN sized board.
@@ -24,7 +26,7 @@ four by four case by ignoring all the fluff for variable size satisfiability.
 
 magic_square_generator.als: 
 This spec makes a kind of magic square game. It generates a 3x3 board with some numbers filled in such that there is only
-one unique magic square that could be created from this setup. In the result generated, the Init board will not be completely filled in, and the Final board will represent the "solution" magic square that comes from this board. One interesting discovery we made here is that one number filled in (usually on a diagonal) could define a unique magic square. We chose to use alloy* for this part of the problem because we had to use higher order quantification, which forge does not permit.
+one unique magic square that could be created from this setup. In the result generated, the Board will not be completely filled in, and the final_coord will represent the "solution" magic square that comes from this board. One interesting discovery we made here is that one number filled in (usually on a diagonal) could define a unique magic square. We chose to use alloy* for this spec because we had to use higher order quantification, which forge does not permit.
 
 
 
