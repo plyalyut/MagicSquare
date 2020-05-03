@@ -84,5 +84,18 @@ pred generate_square[starting_places: Int] {
 
 --generates an incomplete init square and the corresponding complete final square
 run {
-    generate_square[1]
+    generate_square[0]
 } for exactly 1 Board, exactly 3 Coord, exactly 1 Final_Diagonals, 6 Int
+
+/*
+let repeatedValue {
+  Board = Board0
+  Coord = Coord0 + Coord1 + Coord2
+  places = Board0->Coord0->Coord0->sing[2] + Board0->Coord0->Coord1->sing[7]  + Board0->Coord0->Coord2->sing[6]  +
+      Board0->Coord1->Coord0->sing[0]  + Board0->Coord1->Coord1->sing[5]  + Board0->Coord1->Coord2->sing[1]  +
+      Board0->Coord2->Coord0->sing[4]  + Board0->Coord2->Coord1->sing[3]  + Board0->Coord2->Coord2->sing[3]
+}
+
+pred NAME {
+    { generated_square } for repeatedValue is unsat
+}*/
