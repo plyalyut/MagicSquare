@@ -1,7 +1,8 @@
 #lang forge
 
+--represents Coord * Coord board of Int
 sig Board {
-  places: set Int -> Int -> Int
+  places: set Int -> Int -> Int --row->col->N value
 }
 
 pred structural[b: Board] {
@@ -33,6 +34,7 @@ pred structural[b: Board] {
         b.places[sing[3]][sing[0]]] = sum[sing[34]]
 }
 
+--creates a 4x4 board
 run {
     all b: Board {
         structural[b]       

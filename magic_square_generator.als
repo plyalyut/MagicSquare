@@ -8,11 +8,6 @@ sig Board {
     places: set Coord -> Coord -> Int --row->col->N value
 }
 
---completed magic square
-sig Final extends Board {}
---initial game board
-sig Init extends Board{}
-
 --keeps track of diagonals in output
 sig Final_Diagonals {
     diagonal1: set Int,
@@ -72,7 +67,7 @@ pred magic_square_coord [final_coord: Coord->Coord->Int] {
 --generates initial and final squares
 --starting places represents the number of spaces filled in the initial board
 pred generate_square[starting_places: Int] {
-    some init: Init | { --initial board --> not all filled
+    some init: Board | { --initial board --> not all filled
        #(init.places[Coord][Coord]) = starting_places
        --exactly one set of final coordinates that meet conditions
     	one final_coord: set Coord->Coord->Int | {
@@ -80,10 +75,6 @@ pred generate_square[starting_places: Int] {
 	       magic_square_coord[final_coord]
               init.places in final_coord
               init.places != final_coord
-		--final board completely filled with final coords
-              some final: Final | { 
-			final.places = final_coord
-              }
         }
     }
 }
@@ -91,6 +82,7 @@ pred generate_square[starting_places: Int] {
 
 -------------------------Tests-----------------------------
 
+--generates an incomplete init square and the corresponding complete final square
 run {
-    generate_square[3]
-} for exactly 1 Init, exactly 1 Final, exactly 2 Board, exactly 3 Coord, exactly 1 Final_Diagonals, 6 Int
+    generate_square[1]
+} for exactly 1 Board, exactly 3 Coord, exactly 1 Final_Diagonals, 6 Int

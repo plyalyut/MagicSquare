@@ -8,8 +8,8 @@ sig Coord {
 --represents Coord * Coord board of Int
 sig Board {
     places: set Coord -> Coord -> Int, --row->col->N value
-    diagonal1: set Int,
-    diagonal2: set Int
+    diagonal1: set Int, --TL to BR diagonal
+    diagonal2: set Int  --TR to BL diagonal
 }
 
 --sets up structure of board
@@ -184,7 +184,7 @@ pred add_square[b1: Board, b2: Board] {
 --    }
 --} for exactly 1 Board, exactly 3 Coord, 6 Int
 
---repeated values in board
+-- repeated values in board
 inst repeatedValue {
   Board = Board0
   Coord = Coord0 + Coord1 + Coord2
