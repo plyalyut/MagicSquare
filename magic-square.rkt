@@ -218,11 +218,17 @@ inst goodSquare {
       Board0->Coord2->Coord0->sing[4]  + Board0->Coord2->Coord1->sing[3]  + Board0->Coord2->Coord2->sing[8]
 }
 
+inst oneSquare {
+  Board = Board0
+  Coord = Coord0
+}
+
 test expect {
     { structural[Board] magic_square[Board] } for repeatedValue is unsat
     { structural[Board] magic_square[Board] } for invalidBoard is unsat
     { structural[Board] magic_square[Board] } for twoByTwo is unsat
     { structural[Board] magic_square[Board] } for goodSquare is sat
+    { structural[Board] magic_square[Board] } for oneSquare is sat
 }
 
 -- multiplicity property of magic squares
