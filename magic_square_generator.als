@@ -69,7 +69,8 @@ pred magic_square_coord [final_coord: Coord->Coord->Int] {
     }
 }
 
-
+--generates initial and final squares
+--starting places represents the number of spaces filled in the initial board
 pred generate_square[starting_places: Int] {
     some init: Init | { --initial board --> not all filled
        #(init.places[Coord][Coord]) = starting_places
@@ -91,5 +92,5 @@ pred generate_square[starting_places: Int] {
 -------------------------Tests-----------------------------
 
 run {
-    generate_square[1]
+    generate_square[3]
 } for exactly 1 Init, exactly 1 Final, exactly 2 Board, exactly 3 Coord, exactly 1 Final_Diagonals, 6 Int

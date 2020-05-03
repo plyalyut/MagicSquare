@@ -120,7 +120,7 @@ pred add_square[b1: Board, b2: Board] {
 --        structural[b]
 --        magic_square[b]
 --        successive[b]
---        start_at[1]
+--        start_at[1, b]
 --    }
 --} for exactly 1 Board, exactly 1 Coord, 2 Int
 
@@ -140,7 +140,7 @@ pred add_square[b1: Board, b2: Board] {
 --        structural[b]
 --        magic_square[b]
 --        successive[b]
---        start_at[1]
+--        start_at[1, b]
 --    }
 --} for exactly 1 Board, exactly 3 Coord, 5 Int
 
@@ -208,11 +208,11 @@ inst twoByTwo {
   Coord = Coord0 + Coord1
 }
 
-test expect {
-    { structural[Board] magic_square[Board] } for repeatedValue is unsat
-    { structural[Board] magic_square[Board] } for invalidBoard is unsat
-    { structural[Board] magic_square[Board] } for twoByTwo is unsat
-}
+--test expect {
+--    { structural[Board] magic_square[Board] } for repeatedValue is unsat
+--    { structural[Board] magic_square[Board] } for invalidBoard is unsat
+--    { structural[Board] magic_square[Board] } for twoByTwo is unsat
+--}
 
 -- multiplicity property of magic squares
 --multiplicity_property : check {
